@@ -141,7 +141,7 @@ namespace umbraco
             _elements.Add("path", path);
             _elements.Add("splitpath", _splitpath);
         }
-        
+
         /// <summary>
         /// Puts the properties of the node into the elements table
         /// </summary>
@@ -359,7 +359,7 @@ namespace umbraco
 
             public int TemplateId
             {
-                get { return _inner.Template == null ? 0 : _inner.Template.Id; }
+                get { return _inner.TemplateId ?? 0; }
             }
 
             public int SortOrder

@@ -52,7 +52,7 @@ namespace Umbraco.Core.Services
             xml.Add(new XAttribute("writerName", content.GetWriterProfile(userService)?.Name ?? "??"));
             xml.Add(new XAttribute("writerID", content.WriterId));
 
-            xml.Add(new XAttribute("template", content.Template?.Id.ToString(CultureInfo.InvariantCulture) ?? "0"));
+            xml.Add(new XAttribute("template", (content.TemplateId ?? 0).ToString(CultureInfo.InvariantCulture)));
 
             xml.Add(new XAttribute("isPublished", content.Published));
 
@@ -66,7 +66,7 @@ namespace Umbraco.Core.Services
                     var children = contentService.GetPagedChildren(content.Id, page++, pageSize, out total);
                     SerializeChildren(contentService, dataTypeService, userService, localizationService, urlSegmentProviders, children, xml, published);
                 }
-                
+
             }
 
             return xml;

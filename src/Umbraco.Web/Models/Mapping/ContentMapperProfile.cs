@@ -22,7 +22,8 @@ namespace Umbraco.Web.Models.Mapping
             IUserService userService,
             IContentService contentService,
             IContentTypeService contentTypeService,
-            ILocalizationService localizationService)
+            ILocalizationService localizationService,
+            IFileService fileService)
         {
             // create, capture, cache
             var contentOwnerResolver = new OwnerResolver<IContent>(userService);
@@ -30,9 +31,9 @@ namespace Umbraco.Web.Models.Mapping
             var actionButtonsResolver = new ActionButtonsResolver(userService, contentService);
             var childOfListViewResolver = new ContentChildOfListViewResolver(contentService, contentTypeService);
             var contentTypeBasicResolver = new ContentTypeBasicResolver<IContent, ContentItemDisplay>();
-            var defaultTemplateResolver = new DefaultTemplateResolver();
+            var defaultTemplateResolver = new DefaultTemplateResolver(fileService);
             var variantResolver = new ContentVariantResolver(localizationService);
-            
+
             //FROM IContent TO ContentItemDisplay
             CreateMap<IContent, ContentItemDisplay>()
                 .ForMember(dest => dest.Udi, opt => opt.MapFrom(src => Udi.Create(src.Blueprint ? Constants.UdiEntityType.DocumentBlueprint : Constants.UdiEntityType.Document, src.Key)))
@@ -57,7 +58,7 @@ namespace Umbraco.Web.Models.Mapping
                 .ForMember(dest => dest.AllowedTemplates, opt =>
                     opt.MapFrom(content => content.ContentType.AllowedTemplates
                         .Where(t => t.Alias.IsNullOrWhiteSpace() == false && t.Name.IsNullOrWhiteSpace() == false)
-                        .ToDictionary(t => t.Alias, t => t.Name)))                
+                        .ToDictionary(t => t.Alias, t => t.Name)))
                 .ForMember(dest => dest.AllowedActions, opt => opt.ResolveUsing(src => actionButtonsResolver.Resolve(src)))
                 .ForMember(dest => dest.AdditionalData, opt => opt.Ignore());
 
@@ -136,5 +137,5 @@ namespace Umbraco.Web.Models.Mapping
                 return source.CultureInfos.TryGetValue(culture, out var name) && !name.Name.IsNullOrWhiteSpace() ? name.Name : $"(({source.Name}))";
             }
         }
-    }    
+    }
 }

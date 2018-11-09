@@ -70,7 +70,7 @@ namespace Umbraco.Tests.Persistence.Repositories
                     Content = @"<%@ Master Language=""C#"" %>"
                 };
                 repository.Save(template);
-                
+
 
                 //Assert
                 Assert.That(repository.Get("test"), Is.Not.Null);
@@ -91,7 +91,7 @@ namespace Umbraco.Tests.Persistence.Repositories
                 // Act
                 var template = new Template("test", "test");
                 repository.Save(template);
-                
+
 
                 //Assert
                 Assert.That(repository.Get("test"), Is.Not.Null);
@@ -118,13 +118,13 @@ namespace Umbraco.Tests.Persistence.Repositories
                 //NOTE: This has to be persisted first
                 var template = new Template("test", "test");
                 repository.Save(template);
-                
+
 
                 // Act
                 var template2 = new Template("test2", "test2");
                 template2.SetMasterTemplate(template);
                 repository.Save(template2);
-                
+
 
                 //Assert
                 Assert.That(repository.Get("test2"), Is.Not.Null);
@@ -148,7 +148,7 @@ namespace Umbraco.Tests.Persistence.Repositories
                 // Act
                 var template = new Template("test", "test");
                 repository.Save(template);
-                
+
 
                 //Assert
                 Assert.That(repository.Get("test"), Is.Not.Null);
@@ -172,7 +172,7 @@ namespace Umbraco.Tests.Persistence.Repositories
                     Content = ViewHelper.GetDefaultFileContent()
                 };
                 repository.Save(template);
-                
+
 
                 //Assert
                 Assert.That(repository.Get("test"), Is.Not.Null);
@@ -196,13 +196,13 @@ namespace Umbraco.Tests.Persistence.Repositories
                 //NOTE: This has to be persisted first
                 var template = new Template("test", "test");
                 repository.Save(template);
-                
+
 
                 // Act
                 var template2 = new Template("test2", "test2");
                 template2.SetMasterTemplate(template);
                 repository.Save(template2);
-                
+
 
                 //Assert
                 Assert.That(repository.Get("test2"), Is.Not.Null);
@@ -228,14 +228,14 @@ namespace Umbraco.Tests.Persistence.Repositories
                     Content = ViewHelper.GetDefaultFileContent()
                 };
                 repository.Save(template);
-                
+
 
                 var template2 = new Template("test", "test")
                 {
                     Content = ViewHelper.GetDefaultFileContent()
                 };
                 repository.Save(template2);
-                
+
 
                 //Assert
                 Assert.AreEqual("test1", template2.Alias);
@@ -258,18 +258,18 @@ namespace Umbraco.Tests.Persistence.Repositories
                     Content = ViewHelper.GetDefaultFileContent()
                 };
                 repository.Save(template);
-                
+
 
                 var template2 = new Template("test1", "test1")
                 {
                     Content = ViewHelper.GetDefaultFileContent()
                 };
                 repository.Save(template2);
-                
+
 
                 template.Alias = "test1";
                 repository.Save(template);
-                
+
 
                 //Assert
                 Assert.AreEqual("test11", template.Alias);
@@ -294,11 +294,11 @@ namespace Umbraco.Tests.Persistence.Repositories
                     Content = @"<%@ Master Language=""C#"" %>"
                 };
                 repository.Save(template);
-                
+
 
                 template.Content = @"<%@ Master Language=""VB"" %>";
                 repository.Save(template);
-                
+
 
                 var updated = repository.Get("test");
 
@@ -325,11 +325,11 @@ namespace Umbraco.Tests.Persistence.Repositories
                     Content = ViewHelper.GetDefaultFileContent()
                 };
                 repository.Save(template);
-                
+
 
                 template.Content += "<html></html>";
                 repository.Save(template);
-                
+
 
                 var updated = repository.Get("test");
 
@@ -353,13 +353,13 @@ namespace Umbraco.Tests.Persistence.Repositories
                     Content = @"<%@ Master Language=""C#"" %>"
                 };
                 repository.Save(template);
-                
+
 
                 // Act
                 var templates = repository.Get("test");
                 Assert.That(_masterPageFileSystem.FileExists("test.master"), Is.True);
                 repository.Delete(templates);
-                
+
 
                 // Assert
                 Assert.IsNull(repository.Get("test"));
@@ -381,13 +381,13 @@ namespace Umbraco.Tests.Persistence.Repositories
                     Content = ViewHelper.GetDefaultFileContent()
                 };
                 repository.Save(template);
-                
+
 
                 // Act
                 var templates = repository.Get("test");
                 Assert.That(_viewsFileSystem.FileExists("test.cshtml"), Is.True);
                 repository.Delete(templates);
-                
+
 
                 // Assert
                 Assert.IsNull(repository.Get("test"));
@@ -414,7 +414,7 @@ namespace Umbraco.Tests.Persistence.Repositories
                 contentTypeRepository.Save(contentType);
                 var textpage = MockedContent.CreateSimpleContent(contentType);
                 contentRepo.Save(textpage);
-                
+
 
 
                 var template = new Template("test", "test")
@@ -422,16 +422,16 @@ namespace Umbraco.Tests.Persistence.Repositories
                     Content = @"<%@ Master Language=""C#"" %>"
                 };
                 templateRepository.Save(template);
-                
 
-                textpage.Template = template;
+
+                textpage.TemplateId = template.Id;
                 contentRepo.Save(textpage);
-                
+
 
                 // Act
                 var templates = templateRepository.Get("test");
                 templateRepository.Delete(templates);
-                
+
 
                 // Assert
                 Assert.IsNull(templateRepository.Get("test"));
@@ -466,12 +466,12 @@ namespace Umbraco.Tests.Persistence.Repositories
                 repository.Save(parent);
                 repository.Save(child);
                 repository.Save(baby);
-                
+
 
                 // Act
                 var templates = repository.Get("parent");
                 repository.Delete(templates);
-                
+
 
                 // Assert
                 Assert.IsNull(repository.Get("test"));
@@ -623,7 +623,7 @@ namespace Umbraco.Tests.Persistence.Repositories
                 repository.Save(toddler4);
                 repository.Save(baby1);
                 repository.Save(baby2);
-                
+
 
                 // Assert
                 Assert.AreEqual(string.Format("-1,{0}", parent.Id), parent.Path);
@@ -668,12 +668,12 @@ namespace Umbraco.Tests.Persistence.Repositories
                 repository.Save(child2);
                 repository.Save(toddler1);
                 repository.Save(toddler2);
-                
+
 
                 //Act
                 toddler2.SetMasterTemplate(child2);
                 repository.Save(toddler2);
-                
+
 
                 //Assert
                 Assert.AreEqual($"-1,{parent.Id},{child2.Id},{toddler2.Id}", toddler2.Path);
@@ -697,12 +697,12 @@ namespace Umbraco.Tests.Persistence.Repositories
 
                 repository.Save(parent);
                 repository.Save(child1);
-                
+
 
                 //Act
                 child1.SetMasterTemplate(null);
                 repository.Save(child1);
-                
+
 
                 //Assert
                 Assert.AreEqual($"-1,{child1.Id}", child1.Path);
@@ -814,7 +814,7 @@ namespace Umbraco.Tests.Persistence.Repositories
             repository.Save(toddler4);
             repository.Save(baby1);
             repository.Save(baby2);
-            
+
 
             return new[] {parent, child1, child2, toddler1, toddler2, toddler3, toddler4, baby1, baby2};
         }

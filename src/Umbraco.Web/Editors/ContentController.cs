@@ -77,7 +77,7 @@ namespace Umbraco.Web.Editors
             {
                 controllerSettings.Services.Replace(typeof(IHttpActionSelector), new ParameterSwapControllerActionSelector(
                     new ParameterSwapControllerActionSelector.ParameterSwapInfo("GetNiceUrl", "id", typeof(int), typeof(Guid), typeof(Udi)),
-                    new ParameterSwapControllerActionSelector.ParameterSwapInfo("GetById", "id", typeof(int), typeof(Guid), typeof(Udi))    
+                    new ParameterSwapControllerActionSelector.ParameterSwapInfo("GetById", "id", typeof(int), typeof(Guid), typeof(Udi))
                 ));
             }
         }
@@ -345,13 +345,13 @@ namespace Umbraco.Web.Editors
             }
 
             throw new HttpResponseException(HttpStatusCode.NotFound);
-        }   
+        }
 
         /// <summary>
         /// Gets an empty content item for the
         /// </summary>
         /// <param name="contentTypeAlias"></param>
-        /// <param name="parentId"></param>        
+        /// <param name="parentId"></param>
         [OutgoingEditorModelEvent]
         public ContentItemDisplay GetEmpty(string contentTypeAlias, int parentId)
         {
@@ -366,7 +366,7 @@ namespace Umbraco.Web.Editors
 
             //remove the listview app if it exists
             mapped.ContentApps = mapped.ContentApps.Where(x => x.Alias != "umbListView").ToList();
-            
+
             return mapped;
         }
 
@@ -457,7 +457,7 @@ namespace Umbraco.Web.Editors
         public PagedResult<ContentItemBasic<ContentPropertyBasic>> GetChildren(
                 int id,
                 string includeProperties,
-                int pageNumber = 0,  
+                int pageNumber = 0,
                 int pageSize = 0,
                 string orderBy = "SortOrder",
                 Direction orderDirection = Direction.Ascending,
@@ -500,7 +500,7 @@ namespace Umbraco.Web.Editors
                     opts =>
                     {
 
-                        opts.SetCulture(cultureName);                        
+                        opts.SetCulture(cultureName);
 
                         // if there's a list of property aliases to map - we will make sure to store this in the mapping context.
                         if (!includeProperties.IsNullOrWhiteSpace())
@@ -672,7 +672,7 @@ namespace Umbraco.Web.Editors
                             break;
                     }
                 }
-               
+
             }
 
             //initialize this to successful
@@ -777,7 +777,7 @@ namespace Umbraco.Web.Editors
                     throw new HttpResponseException(Request.CreateValidationErrorResponse(display));
                 }
             }
-            
+
             display.PersistedContent = contentItem.PersistedContent;
 
             return display;
@@ -1143,7 +1143,7 @@ namespace Umbraco.Web.Editors
 
                 var content = MapToDisplay(foundContent);
 
-                if (!unpublishResult.Success)   
+                if (!unpublishResult.Success)
                 {
                     AddCancelMessage(content);
                     throw new HttpResponseException(Request.CreateValidationErrorResponse(content));
@@ -1277,7 +1277,7 @@ namespace Umbraco.Web.Editors
             {
                 Services.DomainService.Delete(domain);
             }
-            
+
             var names = new List<string>();
 
             // create or update domains in the model
@@ -1365,7 +1365,7 @@ namespace Umbraco.Web.Editors
                     AddCultureValidationError(cultureError, "speechBubbles/contentCultureValidationError");
                 }
             }
-                
+
             base.HandleInvalidModelState(display);
         }
 
@@ -1427,9 +1427,9 @@ namespace Umbraco.Web.Editors
             contentSave.PersistedContent.ReleaseDate = contentSave.ReleaseDate;
 
             //only set the template if it didn't change
-            var templateChanged = (contentSave.PersistedContent.Template == null && contentSave.TemplateAlias.IsNullOrWhiteSpace() == false)
-                                                        || (contentSave.PersistedContent.Template != null && contentSave.PersistedContent.Template.Alias != contentSave.TemplateAlias)
-                                                        || (contentSave.PersistedContent.Template != null && contentSave.TemplateAlias.IsNullOrWhiteSpace());
+            var templateChanged = (contentSave.PersistedContent.TemplateId == null && contentSave.TemplateAlias.IsNullOrWhiteSpace() == false)
+                                                        || (contentSave.PersistedContent.TemplateId != null && Services.FileService.GetTemplate(contentSave.PersistedContent.TemplateId.Value).Alias != contentSave.TemplateAlias)
+                                                        || (contentSave.PersistedContent.TemplateId != null && contentSave.TemplateAlias.IsNullOrWhiteSpace());
             if (templateChanged)
             {
                 var template = Services.FileService.GetTemplate(contentSave.TemplateAlias);
@@ -1441,7 +1441,7 @@ namespace Umbraco.Web.Editors
                 else
                 {
                     //NOTE: this could be null if there was a template and the posted template is null, this should remove the assigned template
-                    contentSave.PersistedContent.Template = template;
+                    contentSave.PersistedContent.TemplateId = template?.Id;
                 }
             }
         }
@@ -1666,7 +1666,7 @@ namespace Umbraco.Web.Editors
             var display = Mapper.Map<ContentItemDisplay>(content);
             return display;
         }
-		
+
         [EnsureUserPermissionForContent("contentId", 'R')]
         public IEnumerable<NotifySetting> GetNotificationOptions(int contentId)
         {
@@ -1744,7 +1744,7 @@ namespace Umbraco.Web.Editors
                 if (users.TryGetValue(rollbackVersion.VersionAuthorId, out var userName))
                     rollbackVersion.VersionAuthorName = userName;
             }
-            
+
             return rollbackVersions;
         }
 
@@ -1753,7 +1753,7 @@ namespace Umbraco.Web.Editors
         {
             var version = Services.ContentService.GetVersion(versionId);
             var content = MapToDisplay(version);
-                       
+
 			return culture == null
 				? content.Variants.FirstOrDefault()  //No culture set - so this is an invariant node - so just list me the first item in here
                 : content.Variants.FirstOrDefault(x => x.Language.IsoCode == culture);

@@ -17,6 +17,7 @@ namespace Umbraco.Core.Models
     {
         private IContentType _contentType;
         private ITemplate _template;
+        private int? _templateId;
         private bool _published;
         private PublishedState _publishedState;
         private DateTime? _releaseDate;
@@ -84,7 +85,7 @@ namespace Umbraco.Core.Models
         // ReSharper disable once ClassNeverInstantiated.Local
         private class PropertySelectors
         {
-            public readonly PropertyInfo TemplateSelector = ExpressionHelper.GetPropertyInfo<Content, ITemplate>(x => x.Template);
+            public readonly PropertyInfo TemplateIdSelector = ExpressionHelper.GetPropertyInfo<Content, int?>(x => x.TemplateId);
             public readonly PropertyInfo PublishedSelector = ExpressionHelper.GetPropertyInfo<Content, bool>(x => x.Published);
             public readonly PropertyInfo ReleaseDateSelector = ExpressionHelper.GetPropertyInfo<Content, DateTime?>(x => x.ReleaseDate);
             public readonly PropertyInfo ExpireDateSelector = ExpressionHelper.GetPropertyInfo<Content, DateTime?>(x => x.ExpireDate);
@@ -99,11 +100,26 @@ namespace Umbraco.Core.Models
         /// If no template is explicitly set on the Content object,
         /// the Default template from the ContentType will be returned.
         /// </remarks>
+//        [DataMember]
+//        public virtual ITemplate Template
+//        {
+//            get => _template ?? _contentType.DefaultTemplate;
+//            set => SetPropertyValueAndDetectChanges(value, ref _template, Ps.Value.TemplateSelector);
+//        }
+
+        /// <summary>
+        /// Gets or sets the template id used by the Content.
+        /// This is used to override the default one from the ContentType.
+        /// </summary>
+        /// <remarks>
+        /// If no template id is explicitly set on the Content object,
+        /// the Default template id from the ContentType will be returned.
+        /// </remarks>
         [DataMember]
-        public virtual ITemplate Template
+        public virtual int? TemplateId
         {
-            get => _template ?? _contentType.DefaultTemplate;
-            set => SetPropertyValueAndDetectChanges(value, ref _template, Ps.Value.TemplateSelector);
+            get => _templateId ?? _contentType.DefaultTemplate?.Id;
+            set => SetPropertyValueAndDetectChanges(value, ref _templateId, Ps.Value.TemplateIdSelector);
         }
 
         /// <summary>
@@ -205,7 +221,7 @@ namespace Umbraco.Core.Models
 
         /// <inheritdoc />
         [IgnoreDataMember]
-        public ITemplate PublishTemplate { get; internal set; } // set by persistence
+        public int? PublishTemplateId { get; internal set; } // set by persistence
 
         /// <inheritdoc />
         [IgnoreDataMember]
@@ -229,7 +245,7 @@ namespace Umbraco.Core.Models
         public bool WasCulturePublished(string culture)
             // just check _publishInfosOrig - a copy of _publishInfos
             // a non-available culture could not become published anyways
-            => _publishInfosOrig != null && _publishInfosOrig.ContainsKey(culture); 
+            => _publishInfosOrig != null && _publishInfosOrig.ContainsKey(culture);
 
         // adjust dates to sync between version, cultures etc
         // used by the repo when persisting
@@ -467,8 +483,8 @@ namespace Umbraco.Core.Models
         {
             base.ResetDirtyProperties(rememberDirty);
 
-            if (Template != null)
-                Template.ResetDirtyProperties(rememberDirty);
+//            if (TemplateId != null)
+//                Template.ResetDirtyProperties(rememberDirty);
             if (ContentType != null)
                 ContentType.ResetDirtyProperties(rememberDirty);
 
@@ -520,7 +536,7 @@ namespace Umbraco.Core.Models
                 clonedContent._publishInfos = (ContentCultureInfosCollection) _publishInfos.DeepClone(); //manually deep clone
                 clonedContent._publishInfos.CollectionChanged += clonedContent.PublishNamesCollectionChanged;    //re-assign correct event handler
             }
-            
+
         }
     }
 }
