@@ -13,7 +13,7 @@ namespace Umbraco.Core.Packaging
         /// Returns the content of the file with the given filename
         /// </summary>
         /// <param name="packageFilePath">Full path to the umbraco package file</param>
-        /// <param name="fileToRead">filename of the file for wich to get the text content</param>
+        /// <param name="fileToRead">filename of the file for which to get the text content</param>
         /// <param name="directoryInPackage">this is the relative directory for the location of the file in the package
         /// I dont know why umbraco packages contains directories in the first place??</param>
         /// <returns>text content of the file</returns>
