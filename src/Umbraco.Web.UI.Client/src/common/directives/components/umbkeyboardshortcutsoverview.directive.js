@@ -7,7 +7,7 @@
 @description
 
 <p>Use this directive to show an overview of keyboard shortcuts in an editor.
-The directive will render an overview trigger wich shows how the overview is opened.
+The directive will render an overview trigger which shows how the overview is opened.
 When this combination is hit an overview is opened with shortcuts based on the model sent to the directive.</p>
 
 <h3>Markup example</h3>
